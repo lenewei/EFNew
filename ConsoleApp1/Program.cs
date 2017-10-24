@@ -9,36 +9,45 @@ namespace CodeFirstNewDatabaseSample
 {
    class Program
    {
+      static Program()
+      {
+         Database.SetInitializer<BlogContext>(null); // or however you have it
+         System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new CommandInterceptor());
+      }
+
       static void Main(string[] args)
       {
          using (var db = new BlogContext())
          {
-            // Create and save a new Blog 
-            Console.Write("Enter a name for a new Blog: ");
-            var name = Console.ReadLine();
 
-            var blog = new Blog { Name = name };
-            db.Blogs.Add(blog);
-            db.Database.Log = sql => 
-            {
-               Console.Write(sql);
-            };
+            db.Database.Create();
 
-            db.SaveChanges();
+            //// Create and save a new Blog 
+            //Console.Write("Enter a name for a new Blog: ");
+            //var name = Console.ReadLine();
 
-            // Display all Blogs from the database 
-            var query = from b in db.Blogs
-                        orderby b.Name
-                        select b;
+            //var blog = new Blog { Name = name };
+            //db.Blogs.Add(blog);
+            //db.Database.Log = sql => 
+            //{
+            //   Console.WriteLine(sql);
+            //};
 
-            Console.WriteLine("All blogs in the database:");
-            foreach (var item in query)
-            {
-               Console.WriteLine(item.Name);
-            }
+            //db.SaveChanges();
+
+            //// Display all Blogs from the database 
+            //var query = from b in db.Blogs
+            //            orderby b.Name
+            //            select b;
+
+            //Console.WriteLine("All blogs in the database:");
+            //foreach (var item in query)
+            //{
+            //   Console.WriteLine(item.Name);
+            //}
 
             Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
+            Console.ReadLine();
          }
       }
    }
