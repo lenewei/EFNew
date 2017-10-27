@@ -13,7 +13,6 @@ namespace CodeFirstNewDatabaseSample
    {
       void IDbCommandInterceptor.NonQueryExecuted(DbCommand command, DbCommandInterceptionContext<int> interceptionContext)
       {
-         //throw new NotImplementedException();
       }
 
       void IDbCommandInterceptor.NonQueryExecuting(DbCommand command, DbCommandInterceptionContext<int> interceptionContext)
@@ -24,24 +23,20 @@ namespace CodeFirstNewDatabaseSample
 
       void IDbCommandInterceptor.ReaderExecuted(DbCommand command, DbCommandInterceptionContext<DbDataReader> interceptionContext)
       {
-         //throw new NotImplementedException();
       }
 
       void IDbCommandInterceptor.ReaderExecuting(DbCommand command, DbCommandInterceptionContext<DbDataReader> interceptionContext)
       {
          Console.WriteLine(command.CommandText);
-         //interceptionContext.Result = 0;
       }
 
       void IDbCommandInterceptor.ScalarExecuted(DbCommand command, DbCommandInterceptionContext<object> interceptionContext)
       {
-         //throw new NotImplementedException();
       }
 
       void IDbCommandInterceptor.ScalarExecuting(DbCommand command, DbCommandInterceptionContext<object> interceptionContext)
       {
          Console.WriteLine(command.CommandText);
-         //interceptionContext.Result = 0;
       }
    }
 }

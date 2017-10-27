@@ -19,8 +19,7 @@ namespace CodeFirstNewDatabaseSample
       {
          using (var db = new BlogContext())
          {
-
-            db.Database.Create();
+            db.Database.CreateIfNotExists();
 
             //// Create and save a new Blog 
             //Console.Write("Enter a name for a new Blog: ");
@@ -56,7 +55,7 @@ namespace CodeFirstNewDatabaseSample
       public int BlogId { get; set; }
       public string Name { get; set; }
 
-      public virtual List<Post> Posts { get; set; }
+      public virtual List<Post> Posts { get; set; } //no virtual
    }
 
    public class Post
