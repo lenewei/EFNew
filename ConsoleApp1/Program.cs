@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CodeFirstNewDatabaseSample
 {
@@ -11,7 +9,7 @@ namespace CodeFirstNewDatabaseSample
    {
       static Program()
       {
-         Database.SetInitializer<BlogContext>(null); // or however you have it
+         Database.SetInitializer<BlogContext>(null);
          System.Data.Entity.Infrastructure.Interception.DbInterception.Add(new CommandInterceptor());
       }
 
@@ -21,31 +19,46 @@ namespace CodeFirstNewDatabaseSample
          {
             db.Database.CreateIfNotExists();
 
-            //// Create and save a new Blog 
-            //Console.Write("Enter a name for a new Blog: ");
-            //var name = Console.ReadLine();
+            // Create and save a new Blog 
+            Console.Write("-- Enter a name for a new Blog: ");
+            var name = Console.ReadLine();
 
-            //var blog = new Blog { Name = name };
-            //db.Blogs.Add(blog);
-            //db.Database.Log = sql => 
-            //{
-            //   Console.WriteLine(sql);
-            //};
+            var blog = new Blog { Name = name };
+            db.Blogs.Add(blog);
+            db.SaveChanges();
+            blog = db.Blogs.Where(_ => _.Name == name).FirstOrDefault();
 
-            //db.SaveChanges();
+            var post1 = new Post { /*PostId = 1,*/ Title = "FST", Content = "Test 1", BlogId = blog.BlogId };
+            var post2 = new Post { /*PostId = 2,*/ Title = "SEC", Content = "Test 2", BlogId = blog.BlogId };
+            var post3 = new Post { /*PostId = 3,*/ Title = "THD", Content = "Test 3", BlogId = blog.BlogId };
+            db.Posts.AddRange(new[] { post1, post2, post3 });
 
-            //// Display all Blogs from the database 
-            //var query = from b in db.Blogs
-            //            orderby b.Name
-            //            select b;
+            db.SaveChanges();
+            db.Database.Log = sql => { Console.WriteLine(sql); };
 
-            //Console.WriteLine("All blogs in the database:");
-            //foreach (var item in query)
-            //{
-            //   Console.WriteLine(item.Name);
-            //}
+            Console.WriteLine("-- Press Enter to continue.");
+            Console.ReadLine();
 
-            Console.WriteLine("Press any key to exit...");
+            // Display all Blogs from the database 
+            var sum = db.Blogs.Where(_ => _.BlogId == 1).Select(_ => _.BlogId).Sum();
+            Console.WriteLine($"-- blog query: {sum}");
+
+            sum = db.Posts.Where(_ => _.BlogId == 1).Select(_ => _.PostId).Sum();
+            Console.WriteLine($"-- post query: {sum}");
+
+            var query = db.Blogs.Join(db.Posts,
+                    b => b.BlogId,
+                    p => p.BlogId,
+                    (b, p) => new { Name = b.Name, Post = p.Content });
+
+            foreach (var item in query)
+            {
+               Console.WriteLine($"{item.Name}, {item.Post}");
+            }
+
+            db.Database.Log = sql => { Console.WriteLine(sql); };
+
+            Console.WriteLine("-- Press any key to exit...");
             Console.ReadLine();
          }
       }
@@ -70,7 +83,7 @@ namespace CodeFirstNewDatabaseSample
 
    public class BlogContext : DbContext
    {
-      public BlogContext(): base("BlogContext")
+      public BlogContext() : base("BlogContext")
       { }
       public DbSet<Blog> Blogs { get; set; }
       public DbSet<Post> Posts { get; set; }
